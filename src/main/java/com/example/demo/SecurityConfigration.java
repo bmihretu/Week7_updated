@@ -24,17 +24,22 @@ public class SecurityConfigration extends WebSecurityConfigurerAdapter {
 
         http
                 .authorizeRequests()
+                .antMatchers("/")
+                .access("hasAnyAuthority('USER'" +
+                        ",'ADMIN')")
+                .antMatchers("/admin").access("hasAuthority('ADMIN')")
                 .anyRequest().authenticated()
                 .and()
-                .formLogin();
+                .formLogin().loginPage("/login").permitAll();
+
     }
         @Override
                 protected void configure(AuthenticationManagerBuilder auth)
         throws Exception{
             auth.inMemoryAuthentication()
-                    .withUser("helo")
-                    .password(passwordEncoder().encode("pasasword"))
-                    .authorities("USER")
+                    .withUser("dave")
+                    .password(passwordEncoder().encode("begreat"))
+                    .authorities("ADMIN")
 
                     .and()
 
