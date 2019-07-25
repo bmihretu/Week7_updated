@@ -13,7 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import java.nio.file.attribute.UserDefinedFileAttributeView;
+
 
 @Configuration
 @EnableWebSecurity
@@ -40,12 +40,10 @@ public class SecurityConfigration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/", "/h2-console/**", "/register").permitAll()
 
-//                .access("hasAnyAuthority('USER'" +
-//                        ",'ADMIN')")
-
                 .antMatchers("/admin").access("hasAuthority('ADMIN')")
                 .anyRequest().authenticated()
-                .and().formLogin().loginPage("/login").permitAll()
+                .and().
+                formLogin().loginPage("/login").permitAll()
                 .and().logout()
                 .logoutRequestMatcher(
                         new AntPathRequestMatcher("/logout"))
@@ -58,21 +56,13 @@ public class SecurityConfigration extends WebSecurityConfigurerAdapter {
                 .headers().frameOptions().disable();
 
     }
+
         @Override
                 protected void configure(AuthenticationManagerBuilder auth)
         throws Exception{
-            auth.inMemoryAuthentication()
-                    .withUser("dave")
-                    .password(passwordEncoder().encode("begreat"))
-                    .authorities("ADMIN")
 
-                    .and()
-
-
-                    .withUser("user")
-                    .password(passwordEncoder().encode("pasasword1"))
-                    .authorities("USER");
-
+        auth.userDetailsService(userDetailsServiceBean())
+                .passwordEncoder(passwordEncoder());
 
 
 
