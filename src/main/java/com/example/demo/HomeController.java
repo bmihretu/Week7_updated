@@ -18,14 +18,16 @@ public class HomeController {
     private UserRepository userRepository;
 
 
-    @GetMapping(value = "/register")
+    @GetMapping("/register")
     public String showRegistrationPage(Model model) {
         model.addAttribute("user", new User());
         return "register";
     }
 
-    @PostMapping(value = "/register")
-    public String processRegistrationPage(@Valid @ModelAttribute("user") User user, BindingResult result, Model model) {
+    @PostMapping("/register")
+    public String processRegistrationPage(@Valid @ModelAttribute("user") User user,
+                                          BindingResult result,
+                                          Model model) {
 
         model.addAttribute("user", user);
         if (result.hasErrors()) {
