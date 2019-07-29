@@ -1,10 +1,12 @@
 package com.example.demo;
 
-//import javax.management.relation.Role;
+import org.hibernate.annotations.Cascade;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+//import javax.management.relation.Role;
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Set;
 
 @Entity
 @Table(name="User_Data")
@@ -12,18 +14,18 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    public long id;
 
-    @Column(name = "email", nullable = false)
+    @Column(name="email", nullable = false)
     private String email;
 
-    @Column(name = "password")
+    @Column(name="password")
     private String password;
 
-    @Column(name = "first_name")
+    @Column(name="first_name")
     private String firstName;
 
-    @Column(name = "last_name")
+    @Column(name="last_name")
     private String lastName;
 
     @Column(name = "enabled")
@@ -32,11 +34,29 @@ public class User {
     @Column(name = "username")
     private String username;
 
+    @Column(name = "image")
+    private String image;
+
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(joinColumns = @JoinColumn(name="user_id"),inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @JoinTable(joinColumns = @JoinColumn(name="user_id"),
+            inverseJoinColumns = @JoinColumn(name="role_id"))
     private Collection<Role> roles;
 
-    public User() {
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    public Set<Bullhorn> messages;
+
+    public User(){
+
+    }
+
+    public User(String email, String password, String firstName, String lastName, boolean enabled, String username, String image){
+        this.setEmail(email);
+        this.setPassword(password);
+        this.setFirstName(firstName);
+        this.setLastName(lastName);
+        this.setEnabled(enabled);
+        this.setUsername(username);
+        this.setImage(image);
     }
 
     public long getId() {
@@ -60,7 +80,8 @@ public class User {
     }
 
     public void setPassword(String password) {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        BCryptPasswordEncoder passwordEncoder =
+                new BCryptPasswordEncoder();
         this.password = passwordEncoder.encode(password);
     }
 
@@ -80,7 +101,7 @@ public class User {
         this.lastName = lastName;
     }
 
-    public boolean getEnabled() {
+    public boolean isEnabled() {
         return enabled;
     }
 
@@ -104,18 +125,19 @@ public class User {
         this.roles = roles;
     }
 
-    public User(String email, String password, String firstName, String lastName, boolean enabled, String username) {
-        this.setEmail(email);
-        this.setPassword(password);
-        this.setFirstName(firstName);
-        this.setLastName(lastName);
-        this.setEnabled(enabled);
-        this.setUsername(username);
-
-
-
-
+    public Set<Bullhorn> getMessages() {
+        return messages;
     }
 
+    public void setMessages(Set<Bullhorn> messages) {
+        this.messages = messages;
+    }
 
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
 }
