@@ -36,6 +36,30 @@ public class HomeController {
         return "index";
     }
 
+    @GetMapping("/register")
+    public String showRegistrationPage(Model model){
+        model.addAttribute("user",  new User());
+        return "register";
+    }
+
+    @PostMapping("/register")
+    public String processRegistrationPage(@Valid @ModelAttribute("user") User user, BindingResult result, Model model) {
+        model.addAttribute("user", user);
+        if (result.hasErrors()) {
+            return "register";
+        } else {
+            userService.saveUser(user);
+            model.addAttribute("message", "User Account Created");
+        }
+        return "redirect:/login";
+    }
+
+    @RequestMapping("/login")
+    public String login(){
+        return "login";
+    }
+
+
     @GetMapping("/add")
     public String newMessage(Model model){
         model.addAttribute("bullhorn", new Bullhorn());
